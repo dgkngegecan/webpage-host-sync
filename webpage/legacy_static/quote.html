@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gegebaskı | Teklif Al</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9RG4EMGZE2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'G-9RG4EMGZE2');
+    </script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo"><span class="ge-emphasis">Ge</span><span class="ge-emphasis">ge</span>baskı</div>
+            <ul class="nav-menu">
+                <li><a href="index.html">Yazıcılar</a></li>
+                <li><a href="prints.html">Örnek Baskılar</a></li>
+                <li><a href="about.html">Hakkımızda</a></li>
+                <li><a href="quote.html" class="active cta-button">Teklif Al</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="hero">
+            <h1 class="hero-title">Hemen Teklif Alın</h1>
+            <p class="hero-subtitle">Projeniz için en uygun fiyatı öğrenin</p>
+        </section>
+
+        <section class="quote-section">
+            <div class="quote-container">
+                <form id="quoteForm" class="quote-form">
+                    <div class="form-group">
+                        <label for="name">Ad Soyad</label>
+                        <input type="text" id="name" required placeholder="Adınız Soyadınız">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="service">Hizmet Türü</label>
+                        <select id="service">
+                            <option value="FDM">FDM Baskı (PLA/PETG/ABS)</option>
+                            <option value="SLA">SLA Reçine Baskı (Figür/Hassas)</option>
+                            <option value="Design">3D Tasarım / Modelleme</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="material">Tercih Edilen Malzeme (Opsiyonel)</label>
+                        <input type="text" id="material" placeholder="Örn: Siyah PLA, Şeffaf Reçine...">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fileLink">Dosya Linki (Opsiyonel)</label>
+                        <input type="url" id="fileLink" placeholder="Google Drive, WeTransfer, Thingiverse linki...">
+                        <small class="form-hint">Eğer hazır bir modeliniz varsa linkini ekleyebilirsiniz.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">Proje Detayları</label>
+                        <textarea id="message" rows="5" required placeholder="Boyutlar, adet, kullanım amacı ve diğer detaylar..."></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" onclick="sendWhatsapp()" class="btn-whatsapp">
+                            <span class="icon">📱</span> WhatsApp ile Gönder
+                        </button>
+                        <button type="button" onclick="sendEmail()" class="btn-email">
+                            <span class="icon">✉️</span> E-posta ile Gönder
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 <span class="ge-emphasis">Ge</span><span class="ge-emphasis">ge</span>baskı. Tüm hakları saklıdır.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        function getFormData() {
+            const name = document.getElementById('name').value;
+            const service = document.getElementById('service').value;
+            const material = document.getElementById('material').value;
+            const fileLink = document.getElementById('fileLink').value;
+            const message = document.getElementById('message').value;
+            
+            return `*Yeni Teklif İsteği*\n\n*Ad:* ${name}\n*Hizmet:* ${service}\n*Malzeme:* ${material}\n*Dosya:* ${fileLink}\n*Not:* ${message}`;
+        }
+
+        function sendWhatsapp() {
+            const text = encodeURIComponent(getFormData());
+            window.open(`https://wa.me/905455613765?text=${text}`, '_blank');
+        }
+
+        function sendEmail() {
+            const subject = encodeURIComponent("Gegebaskı Teklif İsteği");
+            const body = encodeURIComponent(getFormData());
+            window.location.href = `mailto:gegebaski@gmail.com?subject=${subject}&body=${body}`;
+        }
+    </script>
+</body>
+</html>

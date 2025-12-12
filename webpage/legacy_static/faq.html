@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Gegebaskı - Sıkça Sorulan Sorular. 3D baskı hizmetlerimiz, fiyatlandırma, kargo ve süreçler hakkında merak edilenler.">
+    <title>Gegebaskı | S.S.S.</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9RG4EMGZE2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-9RG4EMGZE2');
+    </script>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo"><span class="ge-emphasis">Ge</span><span class="ge-emphasis">ge</span>baskı</div>
+            <ul class="nav-menu">
+                <li><a href="index.html">Yazıcılar</a></li>
+                <li><a href="prints.html">Örnek Baskılar</a></li>
+                <li><a href="about.html">Hakkımızda</a></li>
+                <li><a href="faq.html" class="active">S.S.S.</a></li>
+                <li><a href="quote.html" class="cta-button">Teklif Al</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="hero">
+            <h1 class="hero-title">Sıkça Sorulan Sorular</h1>
+            <p class="hero-subtitle">Aklınıza takılan tüm soruların cevapları</p>
+        </section>
+
+        <section class="faq-section">
+            <div class="faq-container">
+                <div class="faq-item">
+                    <button class="faq-question">Maksimum baskı boyutu nedir?</button>
+                    <div class="faq-answer">
+                        <p>Bambu Lab X1 Carbon yazıcımız ile tek parça halinde 256x256x256mm boyutlarına kadar baskı
+                            alabiliyoruz. Daha büyük parçalar için parçalı baskı ve montaj çözümleri sunuyoruz.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">Hangi dosya formatlarını kabul ediyorsunuz?</button>
+                    <div class="faq-answer">
+                        <p>En yaygın kullanılan .STL, .OBJ ve .3MF formatlarını kabul ediyoruz. Eğer hazır bir dosyanız
+                            yoksa, tasarım hizmetimizden yararlanabilirsiniz.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">Kargo süreci nasıl işliyor?</button>
+                    <div class="faq-answer">
+                        <p>Baskılarınız tamamlandıktan sonra özenle paketlenir ve anlaşmalı kargo firmamız ile
+                            adresinize gönderilir. İstanbul içi elden teslimat seçeneğimiz de mevcuttur.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">Fiyatlandırma neye göre yapılıyor?</button>
+                    <div class="faq-answer">
+                        <p>Fiyatlandırma; kullanılan malzeme miktarı (gramaj), baskı süresi ve modelin karmaşıklığına
+                            göre hesaplanır. "Teklif Al" sayfamızdan hızlıca fiyat alabilirsiniz.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">Hangi malzemeleri kullanıyorsunuz?</button>
+                    <div class="faq-answer">
+                        <p>Standart olarak PLA, PETG, ABS ve TPU (esnek) malzemeler kullanıyoruz. Ayrıca reçine yazıcımız ile yüksek detaylı modeller üretebiliyoruz. Özel malzeme istekleriniz için bizimle iletişime geçebilirsiniz.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">Seri üretim yapıyor musunuz?</button>
+                    <div class="faq-answer">
+                        <p>Evet, düşük ve orta ölçekli seri üretim ihtiyaçlarınız için hizmet veriyoruz. Adetli siparişlerinizde özel fiyatlandırma seçeneklerimiz mevcuttur.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="contact-section">
+            <h2 class="section-title">Başka Sorunuz Var mı?</h2>
+            <div class="contact-info">
+                <a href="https://wa.me/905455613765" class="contact-item" target="_blank">
+                    <span class="contact-icon">📱</span>
+                    <div>
+                        <strong>WhatsApp</strong>
+                        <p>+90 545 561 37 65</p>
+                    </div>
+                </a>
+                <a href="mailto:gegebaski@gmail.com" class="contact-item">
+                    <span class="contact-icon">✉️</span>
+                    <div>
+                        <strong>E-posta</strong>
+                        <p>gegebaski@gmail.com</p>
+                    </div>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 <span class="ge-emphasis">Ge</span><span class="ge-emphasis">ge</span>baskı. Tüm hakları
+            saklıdır.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Simple accordion for FAQ
+        document.querySelectorAll('.faq-question').forEach(button => {
+            button.addEventListener('click', () => {
+                const answer = button.nextElementSibling;
+                button.classList.toggle('active');
+                if (button.classList.contains('active')) {
+                    answer.style.maxHeight = answer.scrollHeight + 'px';
+                } else {
+                    answer.style.maxHeight = 0;
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

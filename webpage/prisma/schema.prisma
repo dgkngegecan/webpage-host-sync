@@ -1,0 +1,185 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  password      String // Hashed password
+  role          String      @default("USER")
+  phone         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // 2FA Secret for Admins
+  twoFactorSecret String?
+
+  requests      PrintRequest[]
+  addresses     Address[]
+  savedFiles    SavedFile[]
+  
+  // Identity & Contact
+  tckn          String?
+  companyName   String?
+  taxOffice     String?
+  taxNumber     String?
+  
+  // 3D Preferences
+  defaultMaterial String?
+  defaultQuality  String?
+  
+  // Legal Consents
+  termsAccepted     DateTime?
+  kvkkAccepted      DateTime?
+  marketingAccepted DateTime?
+}
+
+model Address {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title         String   // e.g. "Ev", "İş"
+  type          String   // "BILLING" (Fatura) or "SHIPPING" (Teslimat)
+  city          String
+  district      String
+  addressDetail String
+  zipCode       String?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  printRequests PrintRequest[]
+}
+
+model SavedFile {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name          String
+  url           String
+  size          Int?     // in bytes
+  
+  createdAt     DateTime @default(now())
+}
+
+model Printer {
+  id          String   @id @default(cuid())
+  name        String
+  model       String
+  description String?
+  status      String   // "IDLE", "PRINTING", "MAINTENANCE"
+  
+  // Specs
+  buildVolume String?
+  layerHeight String?
+  materials   String?
+  features    String?
+
+  imageUrl    String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Filament {
+  id           String   @id @default(cuid())
+  type         String   // PLA, PETG, ABS, TPU
+  color        String
+  brand        String
+  stock        Int      // in grams
+  pricePerGram Float
+  
+  // Specs
+  density      Float?   // g/cm3
+  tempNozzle   String?  // e.g. "200-220"
+  tempBed      String?  // e.g. "60"
+  additives    String?  // e.g. "Karbon Fiber", "Ahşap"
+
+  imageUrl     String?
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model PrintRequest {
+  id          String        @id @default(cuid())
+  userId      String?       // Optional: allow guest requests? For now assume logged in or linked later
+  user        User?         @relation(fields: [userId], references: [id])
+  
+  serviceType String        // FDM, SLA, Design
+  description String
+  fileUrl     String?       // S3 URL or external link
+  
+  // Specs
+  material    String?
+  color       String?
+  infill      Int?
+  layerHeight Float?
+  
+  // Admin fields
+  status      String @default("PENDING")
+  adminNote   String?
+  trackingCode String?
+  trackingUrl  String?   // Added for direct tracking link
+  
+  // Feedback
+  rating      Int?
+  feedback    String?
+  adminResponse String?
+  isPublic    Boolean   @default(false)
+  
+  // Pricing
+  estimatedPrice Float?
+  finalPrice     Float?
+  discountApplied Float? // Percentage
+  usedFilament   Float? // In grams
+  
+  // Shipping
+  shippingAddressId String?
+  shippingAddress   Address? @relation(fields: [shippingAddressId], references: [id])
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model ExamplePrint {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  category    String   // Mechanical, Figure, etc.
+  imageUrl    String?
+  
+  material    String?
+  printerInfo String?
+  layerHeight String?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model FAQ {
+  id        String   @id @default(cuid())
+  question  String
+  answer    String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PricingConfig {
+  key         String   @id
+  value       Float
+  description String?
+  updatedAt   DateTime @updatedAt
+}

@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #0a0a0a;
+  --foreground: #ffffff;
+
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #121212;
+  --bg-card: #1a1a1a;
+  --bg-hover: #252525;
+  --accent: #00d4ff;
+  --accent-hover: #00b8e6;
+  --text-primary: #ffffff;
+  --text-secondary: #b0b0b0;
+  --border: #2a2a2a;
+  --gradient-start: #00d4ff;
+  --gradient-end: #7b2ff7;
+}
+
+body {
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  /* Subtle patterned background */
+  background-image:
+    radial-gradient(1200px 800px at 20% -10%, rgba(0, 212, 255, 0.06), transparent 60%),
+    radial-gradient(800px 600px at 120% 10%, rgba(123, 47, 247, 0.06), transparent 60%),
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.03) 0 2px, transparent 2px 14px);
+  background-attachment: fixed;
+  background-blend-mode: overlay;
+  min-height: 100vh;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* Utilities */
+.text-gradient {
+  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.border-gradient-top {
+  position: relative;
+}
+
+.border-gradient-top::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg,
+      transparent 0%,
+      var(--gradient-start) 20%,
+      var(--gradient-end) 50%,
+      var(--gradient-start) 80%,
+      transparent 100%);
+  background-size: 200% 100%;
+  border-radius: 12px 12px 0 0;
+  filter: blur(0.3px);
+}
