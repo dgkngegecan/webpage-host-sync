@@ -1,2 +1,9 @@
 # webpage-host-sync
-ubuntu host machine sync repo
+
+Website about 3D print quotes and job requests.
+
+
+A sync-repo for the Host machine.
+
+
+
