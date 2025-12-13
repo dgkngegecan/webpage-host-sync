@@ -31,9 +31,9 @@ export default function ExamplesPage() {
             event.currentTarget.reset();
             loadExamples();
             toast.success('Örnek başarıyla eklendi');
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            toast.error('Hata oluştu');
+            toast.error(error.message || 'Hata oluştu');
         } finally {
             setIsSubmitting(false);
         }

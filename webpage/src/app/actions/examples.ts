@@ -15,52 +15,57 @@ export async function getExamples() {
 }
 
 export async function createExample(formData: FormData) {
-    const session = await getServerSession(authOptions);
-    if (session?.user?.role !== "ADMIN") {
-        throw new Error("Unauthorized");
-    }
-
-    const title = formData.get("title") as string;
-    const description = formData.get("description") as string;
-    const category = formData.get("category") as string;
-    const material = formData.get("material") as string;
-    const printerInfo = formData.get("printerInfo") as string;
-    const layerHeight = formData.get("layerHeight") as string;
-    const imageFile = formData.get("image") as File;
-
-    let imageUrl = undefined;
-
-    if (imageFile && imageFile.size > 0) {
-        const buffer = Buffer.from(await imageFile.arrayBuffer());
-        const key = generateStorageKey('examples', imageFile.name);
-
-        await r2.send(new PutObjectCommand({
-            Bucket: R2_BUCKET_NAME,
-            Key: key,
-            Body: buffer,
-            ContentType: imageFile.type,
-        }));
-
-        imageUrl = `${R2_PUBLIC_URL}/${key}`;
-    }
-
-    const example = await prisma.examplePrint.create({
-        data: {
-            title,
-            description,
-            category,
-            material,
-            printerInfo,
-            layerHeight,
-            imageUrl
+    try {
+        const session = await getServerSession(authOptions);
+        if (session?.user?.role !== "ADMIN") {
+            throw new Error("Unauthorized");
         }
-    });
 
-    revalidatePath('/');
-    revalidatePath('/prints');
-    revalidatePath('/admin/examples');
-    // revalidateTag('examples');
-    return example;
+        const title = formData.get("title") as string;
+        const description = formData.get("description") as string;
+        const category = formData.get("category") as string;
+        const material = formData.get("material") as string;
+        const printerInfo = formData.get("printerInfo") as string;
+        const layerHeight = formData.get("layerHeight") as string;
+        const imageFile = formData.get("image") as File;
+
+        let imageUrl = undefined;
+
+        if (imageFile && imageFile.size > 0) {
+            const buffer = Buffer.from(await imageFile.arrayBuffer());
+            const key = generateStorageKey('examples', imageFile.name);
+
+            await r2.send(new PutObjectCommand({
+                Bucket: R2_BUCKET_NAME,
+                Key: key,
+                Body: buffer,
+                ContentType: imageFile.type,
+            }));
+
+            imageUrl = `${R2_PUBLIC_URL}/${key}`;
+        }
+
+        await prisma.examplePrint.create({
+            data: {
+                title,
+                description,
+                category,
+                material,
+                printerInfo,
+                layerHeight,
+                imageUrl
+            }
+        });
+
+        revalidatePath('/');
+        revalidatePath('/prints');
+        revalidatePath('/admin/examples');
+
+        return { success: true };
+    } catch (error) {
+        console.error("Create Example Error:", error);
+        throw new Error("Failed to create example");
+    }
 }
 
 export async function updateExample(id: string, formData: FormData) {
