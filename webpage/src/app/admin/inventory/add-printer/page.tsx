@@ -15,16 +15,17 @@ export default function AddPrinterPage() {
         event.preventDefault();
         setIsSubmitting(true);
 
-        const formData = new FormData(event.currentTarget);
+        const form = event.currentTarget;
+        const formData = new FormData(form);
 
         try {
             await createPrinter(formData);
             toast.success('Yazıcı başarıyla eklendi');
             router.push('/admin/inventory');
             router.refresh();
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error creating printer:', error);
-            toast.error('Yazıcı eklenirken hata oluştu');
+            toast.error(error.message || 'Yazıcı eklenirken hata oluştu');
         } finally {
             setIsSubmitting(false);
         }

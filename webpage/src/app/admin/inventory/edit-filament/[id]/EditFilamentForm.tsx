@@ -20,16 +20,17 @@ export default function EditFilamentForm({ filament }: EditFilamentFormProps) {
         event.preventDefault();
         setIsSubmitting(true);
 
-        const formData = new FormData(event.currentTarget);
+        const form = event.currentTarget;
+        const formData = new FormData(form);
 
         try {
             await updateFilament(filament.id, formData);
             success('Filament güncellendi');
             router.push('/admin/inventory');
             router.refresh();
-        } catch (err) {
+        } catch (err: any) {
             console.error('Error updating filament:', err);
-            error('Hata oluştu');
+            error(err.message || 'Hata oluştu');
         } finally {
             setIsSubmitting(false);
         }

@@ -15,127 +15,146 @@ export async function getFilaments() {
 }
 
 export async function createFilament(formData: FormData) {
-    const session = await getServerSession(authOptions);
-    if (session?.user?.role !== "ADMIN") {
-        throw new Error("Unauthorized");
-    }
-
-    const type = formData.get("type") as string;
-    const color = formData.get("color") as string;
-    const brand = formData.get("brand") as string;
-    const stock = parseInt(formData.get("stock") as string);
-    const pricePerGram = parseFloat(formData.get("pricePerGram") as string);
-    const density = formData.get("density") ? parseFloat(formData.get("density") as string) : null;
-    const tempNozzle = formData.get("tempNozzle") as string;
-    const tempBed = formData.get("tempBed") as string;
-    const additives = formData.get("additives") as string;
-    const imageFile = formData.get("image") as File;
-
-    let imageUrl = undefined;
-
-    if (imageFile && imageFile.size > 0) {
-        const buffer = Buffer.from(await imageFile.arrayBuffer());
-        const key = generateStorageKey('filaments', imageFile.name);
-
-        await r2.send(new PutObjectCommand({
-            Bucket: R2_BUCKET_NAME,
-            Key: key,
-            Body: buffer,
-            ContentType: imageFile.type,
-        }));
-
-        imageUrl = `${R2_PUBLIC_URL}/${key}`;
-    }
-
-    const filament = await prisma.filament.create({
-        data: {
-            type,
-            color,
-            brand,
-            stock,
-            pricePerGram,
-            density,
-            tempNozzle,
-            tempBed,
-            additives,
-            imageUrl,
+    try {
+        const session = await getServerSession(authOptions);
+        if (session?.user?.role !== "ADMIN") {
+            throw new Error("Unauthorized");
         }
-    });
 
-    revalidatePath("/admin/inventory");
-    revalidatePath("/about");
-    // revalidateTag('filaments');
-    return filament;
+        const type = formData.get("type") as string;
+        const color = formData.get("color") as string;
+        const brand = formData.get("brand") as string;
+        const stock = parseInt(formData.get("stock") as string);
+        const pricePerGram = parseFloat(formData.get("pricePerGram") as string);
+        const density = formData.get("density") ? parseFloat(formData.get("density") as string) : null;
+        const tempNozzle = formData.get("tempNozzle") as string;
+        const tempBed = formData.get("tempBed") as string;
+        const additives = formData.get("additives") as string;
+        const imageFile = formData.get("image") as File;
+
+        let imageUrl = undefined;
+
+        if (imageFile && imageFile.size > 0) {
+            const buffer = Buffer.from(await imageFile.arrayBuffer());
+            const key = generateStorageKey('filaments', imageFile.name);
+
+            await r2.send(new PutObjectCommand({
+                Bucket: R2_BUCKET_NAME,
+                Key: key,
+                Body: buffer,
+                ContentType: imageFile.type,
+            }));
+
+            imageUrl = `${R2_PUBLIC_URL}/${key}`;
+        }
+
+        await prisma.filament.create({
+            data: {
+                type,
+                color,
+                brand,
+                stock,
+                pricePerGram,
+                density,
+                tempNozzle,
+                tempBed,
+                additives,
+                imageUrl,
+            }
+        });
+
+        revalidatePath("/admin/inventory");
+        revalidatePath("/about");
+
+        return { success: true };
+    } catch (error) {
+        console.error("Create Filament Error:", error);
+        throw new Error("Failed to create filament");
+    }
 }
 
 export async function updateFilament(id: string, formData: FormData) {
-    const session = await getServerSession(authOptions);
-    if (session?.user?.role !== "ADMIN") {
-        throw new Error("Unauthorized");
-    }
-
-    const type = formData.get("type") as string;
-    const color = formData.get("color") as string;
-    const brand = formData.get("brand") as string;
-    const stock = parseInt(formData.get("stock") as string);
-    const pricePerGram = parseFloat(formData.get("pricePerGram") as string);
-    const density = formData.get("density") ? parseFloat(formData.get("density") as string) : null;
-    const tempNozzle = formData.get("tempNozzle") as string;
-    const tempBed = formData.get("tempBed") as string;
-    const additives = formData.get("additives") as string;
-    const imageFile = formData.get("image") as File;
-
-    let imageUrl = undefined;
-
-    if (imageFile && imageFile.size > 0) {
-        const buffer = Buffer.from(await imageFile.arrayBuffer());
-        const key = generateStorageKey('filaments', imageFile.name);
-
-        await r2.send(new PutObjectCommand({
-            Bucket: R2_BUCKET_NAME,
-            Key: key,
-            Body: buffer,
-            ContentType: imageFile.type,
-        }));
-
-        imageUrl = `${R2_PUBLIC_URL}/${key}`;
-    }
-
-    const filament = await prisma.filament.update({
-        where: { id },
-        data: {
-            type,
-            color,
-            brand,
-            stock,
-            pricePerGram,
-            density,
-            tempNozzle,
-            tempBed,
-            additives,
-            ...(imageUrl && { imageUrl }),
+    try {
+        const session = await getServerSession(authOptions);
+        if (session?.user?.role !== "ADMIN") {
+            throw new Error("Unauthorized");
         }
-    });
 
-    revalidatePath("/admin/inventory");
-    revalidatePath("/about");
-    // revalidateTag('filaments');
-    return filament;
+        const type = formData.get("type") as string;
+        const color = formData.get("color") as string;
+        const brand = formData.get("brand") as string;
+        const stock = parseInt(formData.get("stock") as string);
+        const pricePerGram = parseFloat(formData.get("pricePerGram") as string);
+        const density = formData.get("density") ? parseFloat(formData.get("density") as string) : null;
+        const tempNozzle = formData.get("tempNozzle") as string;
+        const tempBed = formData.get("tempBed") as string;
+        const additives = formData.get("additives") as string;
+        const imageFile = formData.get("image") as File;
+
+        let imageUrl = undefined;
+
+        if (imageFile && imageFile.size > 0) {
+            const buffer = Buffer.from(await imageFile.arrayBuffer());
+            const key = generateStorageKey('filaments', imageFile.name);
+
+            await r2.send(new PutObjectCommand({
+                Bucket: R2_BUCKET_NAME,
+                Key: key,
+                Body: buffer,
+                ContentType: imageFile.type,
+            }));
+
+            imageUrl = `${R2_PUBLIC_URL}/${key}`;
+        }
+
+        await prisma.filament.update({
+            where: { id },
+            data: {
+                type,
+                color,
+                brand,
+                stock,
+                pricePerGram,
+                density,
+                tempNozzle,
+                tempBed,
+                additives,
+                ...(imageUrl && { imageUrl }),
+            }
+        });
+
+        revalidatePath("/admin/inventory");
+        revalidatePath("/about");
+
+        return { success: true };
+    } catch (error) {
+        console.error("Update Filament Error:", error);
+        throw new Error("Failed to update filament");
+    }
 }
 
 export async function updateFilamentStock(id: string, stock: number) {
-    const filament = await prisma.filament.update({
-        where: { id },
-        data: { stock }
-    });
-    revalidatePath('/admin/inventory');
-    // revalidateTag('filaments');
-    return filament;
+    try {
+        await prisma.filament.update({
+            where: { id },
+            data: { stock }
+        });
+        revalidatePath('/admin/inventory');
+        return { success: true };
+    } catch (error) {
+        console.error("Update Stock Error:", error);
+        throw new Error("Failed to update stock");
+    }
 }
 
 export async function deleteFilament(id: string) {
-    await prisma.filament.delete({ where: { id } });
-    revalidatePath('/quote');
-    revalidatePath('/admin/inventory');
-    // revalidateTag('filaments');
+    try {
+        await prisma.filament.delete({ where: { id } });
+        revalidatePath('/quote');
+        revalidatePath('/admin/inventory');
+        return { success: true };
+    } catch (error) {
+        console.error("Delete Filament Error:", error);
+        throw new Error("Failed to delete filament");
+    }
 }

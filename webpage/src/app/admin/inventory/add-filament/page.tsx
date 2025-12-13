@@ -14,16 +14,17 @@ export default function AddFilamentPage() {
         event.preventDefault();
         setIsSubmitting(true);
 
-        const formData = new FormData(event.currentTarget);
+        const form = event.currentTarget;
+        const formData = new FormData(form);
 
         try {
             await createFilament(formData);
             success('Filament eklendi');
             router.push('/admin/inventory');
             router.refresh();
-        } catch (err) {
+        } catch (err: any) {
             console.error('Error creating filament:', err);
-            error('Hata oluştu');
+            error(err.message || 'Hata oluştu');
         } finally {
             setIsSubmitting(false);
         }

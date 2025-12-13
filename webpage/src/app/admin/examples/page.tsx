@@ -24,11 +24,12 @@ export default function ExamplesPage() {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setIsSubmitting(true);
-        const formData = new FormData(event.currentTarget);
+        const form = event.currentTarget;
+        const formData = new FormData(form);
 
         try {
             await createExample(formData);
-            event.currentTarget.reset();
+            form.reset();
             loadExamples();
             toast.success('Örnek başarıyla eklendi');
         } catch (error: any) {

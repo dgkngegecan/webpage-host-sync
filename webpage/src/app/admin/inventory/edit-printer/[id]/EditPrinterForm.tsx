@@ -20,16 +20,17 @@ export default function EditPrinterForm({ printer }: EditPrinterFormProps) {
         event.preventDefault();
         setIsSubmitting(true);
 
-        const formData = new FormData(event.currentTarget);
+        const form = event.currentTarget;
+        const formData = new FormData(form);
 
         try {
             await updatePrinter(printer.id, formData);
             success('Yazıcı güncellendi');
             router.push('/admin/inventory');
             router.refresh();
-        } catch (err) {
+        } catch (err: any) {
             console.error('Error updating printer:', err);
-            error('Hata oluştu');
+            error(err.message || 'Hata oluştu');
         } finally {
             setIsSubmitting(false);
         }

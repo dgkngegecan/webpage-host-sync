@@ -16,124 +16,143 @@ export async function getPrinters() {
 }
 
 export async function createPrinter(formData: FormData) {
-    const session = await getServerSession(authOptions);
-    if (session?.user?.role !== "ADMIN") {
-        throw new Error("Unauthorized");
-    }
-
-    const name = formData.get("name") as string;
-    const model = formData.get("model") as string;
-    const description = formData.get("description") as string;
-    const buildVolume = formData.get("buildVolume") as string;
-    const layerHeight = formData.get("layerHeight") as string;
-    const materials = formData.get("materials") as string;
-    const features = formData.get("features") as string;
-    const imageFile = formData.get("image") as File;
-
-    let imageUrl = undefined;
-
-    if (imageFile && imageFile.size > 0) {
-        const buffer = Buffer.from(await imageFile.arrayBuffer());
-        const key = generateStorageKey('printers', imageFile.name);
-
-        await r2.send(new PutObjectCommand({
-            Bucket: R2_BUCKET_NAME,
-            Key: key,
-            Body: buffer,
-            ContentType: imageFile.type,
-        }));
-
-        imageUrl = `${R2_PUBLIC_URL}/${key}`;
-    }
-
-    const printer = await prisma.printer.create({
-        data: {
-            name,
-            model,
-            description,
-            buildVolume,
-            layerHeight,
-            materials,
-            features,
-            status: 'ONLINE',
-            imageUrl
+    try {
+        const session = await getServerSession(authOptions);
+        if (session?.user?.role !== "ADMIN") {
+            throw new Error("Unauthorized");
         }
-    });
 
-    revalidatePath('/');
-    revalidatePath('/admin/printers');
-    revalidatePath('/admin/inventory');
-    // revalidateTag('printers');
-    return printer;
+        const name = formData.get("name") as string;
+        const model = formData.get("model") as string;
+        const description = formData.get("description") as string;
+        const buildVolume = formData.get("buildVolume") as string;
+        const layerHeight = formData.get("layerHeight") as string;
+        const materials = formData.get("materials") as string;
+        const features = formData.get("features") as string;
+        const imageFile = formData.get("image") as File;
+
+        let imageUrl = undefined;
+
+        if (imageFile && imageFile.size > 0) {
+            const buffer = Buffer.from(await imageFile.arrayBuffer());
+            const key = generateStorageKey('printers', imageFile.name);
+
+            await r2.send(new PutObjectCommand({
+                Bucket: R2_BUCKET_NAME,
+                Key: key,
+                Body: buffer,
+                ContentType: imageFile.type,
+            }));
+
+            imageUrl = `${R2_PUBLIC_URL}/${key}`;
+        }
+
+        await prisma.printer.create({
+            data: {
+                name,
+                model,
+                description,
+                buildVolume,
+                layerHeight,
+                materials,
+                features,
+                status: 'ONLINE',
+                imageUrl
+            }
+        });
+
+        revalidatePath('/');
+        revalidatePath('/admin/printers');
+        revalidatePath('/admin/inventory');
+
+        return { success: true };
+    } catch (error) {
+        console.error("Create Printer Error:", error);
+        throw new Error("Failed to create printer");
+    }
 }
 
 export async function updatePrinter(id: string, formData: FormData) {
-    const session = await getServerSession(authOptions);
-    if (session?.user?.role !== "ADMIN") {
-        throw new Error("Unauthorized");
-    }
-
-    const name = formData.get("name") as string;
-    const model = formData.get("model") as string;
-    const description = formData.get("description") as string;
-    const buildVolume = formData.get("buildVolume") as string;
-    const layerHeight = formData.get("layerHeight") as string;
-    const materials = formData.get("materials") as string;
-    const features = formData.get("features") as string;
-    const imageFile = formData.get("image") as File;
-
-    let imageUrl = undefined;
-
-    if (imageFile && imageFile.size > 0) {
-        const buffer = Buffer.from(await imageFile.arrayBuffer());
-        const key = generateStorageKey('printers', imageFile.name);
-
-        await r2.send(new PutObjectCommand({
-            Bucket: R2_BUCKET_NAME,
-            Key: key,
-            Body: buffer,
-            ContentType: imageFile.type,
-        }));
-
-        imageUrl = `${R2_PUBLIC_URL}/${key}`;
-    }
-
-    const printer = await prisma.printer.update({
-        where: { id },
-        data: {
-            name,
-            model,
-            description,
-            buildVolume,
-            layerHeight,
-            materials,
-            features,
-            ...(imageUrl && { imageUrl }),
+    try {
+        const session = await getServerSession(authOptions);
+        if (session?.user?.role !== "ADMIN") {
+            throw new Error("Unauthorized");
         }
-    });
 
-    revalidatePath('/');
-    revalidatePath('/admin/printers');
-    revalidatePath('/admin/inventory');
-    // revalidateTag('printers');
-    return printer;
+        const name = formData.get("name") as string;
+        const model = formData.get("model") as string;
+        const description = formData.get("description") as string;
+        const buildVolume = formData.get("buildVolume") as string;
+        const layerHeight = formData.get("layerHeight") as string;
+        const materials = formData.get("materials") as string;
+        const features = formData.get("features") as string;
+        const imageFile = formData.get("image") as File;
+
+        let imageUrl = undefined;
+
+        if (imageFile && imageFile.size > 0) {
+            const buffer = Buffer.from(await imageFile.arrayBuffer());
+            const key = generateStorageKey('printers', imageFile.name);
+
+            await r2.send(new PutObjectCommand({
+                Bucket: R2_BUCKET_NAME,
+                Key: key,
+                Body: buffer,
+                ContentType: imageFile.type,
+            }));
+
+            imageUrl = `${R2_PUBLIC_URL}/${key}`;
+        }
+
+        await prisma.printer.update({
+            where: { id },
+            data: {
+                name,
+                model,
+                description,
+                buildVolume,
+                layerHeight,
+                materials,
+                features,
+                ...(imageUrl && { imageUrl }),
+            }
+        });
+
+        revalidatePath('/');
+        revalidatePath('/admin/printers');
+        revalidatePath('/admin/inventory');
+
+        return { success: true };
+    } catch (error) {
+        console.error("Update Printer Error:", error);
+        throw new Error("Failed to update printer");
+    }
 }
 
 export async function updatePrinterStatus(id: string, status: PrinterStatus) {
-    const printer = await prisma.printer.update({
-        where: { id },
-        data: { status }
-    });
-    revalidatePath('/');
-    revalidatePath('/admin/printers');
-    // revalidateTag('printers');
-    return printer;
+    try {
+        await prisma.printer.update({
+            where: { id },
+            data: { status }
+        });
+        revalidatePath('/');
+        revalidatePath('/admin/printers');
+        return { success: true };
+    } catch (error) {
+        console.error("Update Status Error:", error);
+        throw new Error("Failed to update status");
+    }
 }
 
 export async function deletePrinter(id: string) {
-    await prisma.printer.delete({ where: { id } });
-    revalidatePath('/');
-    revalidatePath('/admin/printers');
-    revalidatePath('/admin/inventory');
-    // revalidateTag('printers');
+    try {
+        await prisma.printer.delete({ where: { id } });
+        revalidatePath('/');
+        revalidatePath('/admin/printers');
+        revalidatePath('/admin/inventory');
+        return { success: true };
+    } catch (error) {
+        console.error("Delete Printer Error:", error);
+        throw new Error("Failed to delete printer");
+    }
 }
